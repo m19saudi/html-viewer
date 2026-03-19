@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Offline HTML Viewer</title>
+    <title>Offline Live HTML Viewer</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,59 +45,47 @@
             overflow: auto;
         }
 
-        button {
-            display: block;
-            margin: 20px auto;
-            padding: 10px 20px;
-            background-color: #4CAF50;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-        }
-
-        button:hover {
-            background-color: #45a049;
-        }
-
         .hidden {
             display: none;
         }
+
     </style>
 </head>
 <body>
 
-    <h1>Offline HTML Viewer</h1>
+    <h1>Offline Live HTML Viewer</h1>
     
     <div id="container">
         <!-- Input area for HTML -->
-        <textarea id="htmlInput" placeholder="Paste your HTML code here"></textarea>
+        <textarea id="htmlInput" placeholder="Paste or type your HTML code here"></textarea>
 
         <!-- Output area for rendering HTML -->
         <iframe id="outputViewer" class="hidden"></iframe>
     </div>
 
-    <!-- Button to render HTML -->
-    <button onclick="renderHTML()">Render HTML</button>
-
     <script>
+        // Select the textarea and iframe
+        const htmlInput = document.getElementById('htmlInput');
+        const iframe = document.getElementById('outputViewer');
+        const doc = iframe.contentWindow.document;
+
+        // Function to render HTML into iframe
         function renderHTML() {
             // Get the HTML code from the textarea
-            const htmlCode = document.getElementById('htmlInput').value;
+            const htmlCode = htmlInput.value;
 
-            // Find the iframe and update its content
-            const iframe = document.getElementById('outputViewer');
-            const doc = iframe.contentWindow.document;
-
-            // Open, write and close the iframe document
+            // Open the iframe document, write HTML, and close it
             doc.open();
             doc.write(htmlCode);
             doc.close();
 
-            // Show the iframe
+            // Show the iframe after it renders content
             iframe.classList.remove('hidden');
         }
+
+        // Add event listener to the textarea to listen for input
+        htmlInput.addEventListener('input', renderHTML);
     </script>
+
 </body>
 </html>
