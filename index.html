@@ -7,6 +7,7 @@
     
     <!-- PrismJS for syntax highlighting -->
     <link href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/themes/prism.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/line-numbers/prism-line-numbers.css" rel="stylesheet" />
     <style>
         /* General Body Styling */
         body {
@@ -34,13 +35,13 @@
             justify-content: center;
             align-items: center;
             margin-bottom: 20px;
-            gap: 10px;
+            gap: 15px;
         }
 
         #controls label,
         #controls button,
         #controls input {
-            margin: 0 10px;
+            margin: 0;
             font-size: 14px;
         }
 
@@ -71,6 +72,7 @@
             line-height: 1.5;
             white-space: pre-wrap;
             font-family: monospace;
+            height: 100%;
         }
 
         /* Right Panel: Rendered HTML Output */
@@ -135,6 +137,7 @@
                 margin-bottom: 10px;
             }
         }
+
     </style>
 </head>
 <body>
@@ -142,17 +145,19 @@
     <h1>Offline Live HTML Viewer</h1>
 
     <div id="controls">
+        <button onclick="clearContent()">Clear</button>
+        <button onclick="pasteFromClipboard()">Paste from Clipboard</button>
+        <button onclick="document.getElementById('fileInput').click()">Load HTML</button>
+        <button onclick="downloadHTML()">Save HTML</button>
+        <button onclick="formatHTML()">Format HTML</button>
         <label for="darkMode">Dark Mode</label>
         <input type="checkbox" id="darkMode" onchange="toggleDarkMode()">
-        <button onclick="clearContent()">Clear</button>
-        <button onclick="downloadHTML()">Save HTML</button>
-        <input type="file" id="fileInput" onchange="loadHTMLFile(event)" style="display:none;">
-        <button onclick="document.getElementById('fileInput').click()">Load HTML</button>
-        <button onclick="pasteFromClipboard()">Paste from Clipboard</button>
-        <button onclick="formatHTML()">Format HTML</button>
         <label for="togglePreview">Show Preview</label>
         <input type="checkbox" id="togglePreview" checked onclick="togglePreview()">
     </div>
+
+    <!-- File input (hidden) -->
+    <input type="file" id="fileInput" onchange="loadHTMLFile(event)" style="display:none;">
 
     <div id="container">
         <!-- Left Panel: HTML Input -->
@@ -163,6 +168,7 @@
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/prism.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/plugins/line-numbers/prism-line-numbers.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prettier@2.5.1/standalone.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/prettier@2.5.1/parser-html.js"></script>
 
