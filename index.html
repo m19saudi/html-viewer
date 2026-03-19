@@ -4,48 +4,90 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Offline Live HTML Viewer</title>
+    
+    <!-- PrismJS for syntax highlighting -->
+    <link href="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/themes/prism.css" rel="stylesheet" />
     <style>
+        /* General Body Styling */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
-            padding: 20px;
+            padding: 0;
             background-color: #f4f4f9;
             color: #333;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            justify-content: flex-start;
+            padding: 20px;
         }
 
         h1 {
             text-align: center;
             color: #4CAF50;
+            margin: 20px 0;
         }
 
+        /* Controls for buttons and toggle options */
+        #controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        #controls label,
+        #controls button,
+        #controls input {
+            margin: 0 10px;
+            font-size: 14px;
+        }
+
+        /* Container holding the input and output panels */
         #container {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
+            align-items: stretch;
+            width: 100%;
+            max-width: 1200px;
+            height: 500px;
             margin-top: 20px;
-            min-height: 500px;  /* Extends the size to the bottom */
         }
 
+        /* Left Panel: HTML Input Area */
         #htmlInput {
-            width: 45%;
-            height: 300px;
+            width: 35%;
+            height: 100%;
             padding: 10px;
             font-size: 14px;
             border: 1px solid #ccc;
-            border-radius: 4px;
+            border-right: 1px solid #ddd;
+            background-color: #fff;
             resize: none;
-            background-color: #fff;
+            overflow-y: auto;
+            margin-right: 10px;
+            box-sizing: border-box;
+            line-height: 1.5;
+            white-space: pre-wrap;
+            font-family: monospace;
         }
 
+        /* Right Panel: Rendered HTML Output */
         #outputViewer {
-            width: 45%;
-            height: 300px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            background-color: #fff;
-            padding: 10px;
-            overflow: auto;
+            width: 60%;
+            height: 100%;
+            padding: 15px;
+            border-left: 1px solid #ddd;
+            background-color: #f5f5f5;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow-y: auto;
+            margin-left: 10px;
+            box-sizing: border-box;
         }
 
+        /* Button Styling */
         button {
             padding: 10px 20px;
             background-color: #4CAF50;
@@ -98,7 +140,7 @@
 <body>
 
     <h1>Offline Live HTML Viewer</h1>
-    
+
     <div id="controls">
         <label for="darkMode">Dark Mode</label>
         <input type="checkbox" id="darkMode" onchange="toggleDarkMode()">
@@ -106,25 +148,30 @@
         <button onclick="downloadHTML()">Save HTML</button>
         <input type="file" id="fileInput" onchange="loadHTMLFile(event)" style="display:none;">
         <button onclick="document.getElementById('fileInput').click()">Load HTML</button>
+        <button onclick="pasteFromClipboard()">Paste from Clipboard</button>
+        <button onclick="formatHTML()">Format HTML</button>
         <label for="togglePreview">Show Preview</label>
         <input type="checkbox" id="togglePreview" checked onclick="togglePreview()">
     </div>
-    
+
     <div id="container">
-        <!-- Input area for HTML -->
+        <!-- Left Panel: HTML Input -->
         <textarea id="htmlInput" placeholder="Paste or type your HTML code here"></textarea>
 
-        <!-- Output area for rendering HTML -->
+        <!-- Right Panel: Rendered HTML Output -->
         <iframe id="outputViewer" class="hidden"></iframe>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/prismjs@1.25.0/prism.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prettier@2.5.1/standalone.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/prettier@2.5.1/parser-html.js"></script>
+
     <script>
-        // Elements
         const htmlInput = document.getElementById('htmlInput');
         const iframe = document.getElementById('outputViewer');
         const doc = iframe.contentWindow.document;
-        
-        // Real-time rendering of HTML as user types
+
+        // Real-time rendering of HTML as user types or pastes content
         function renderHTML() {
             const htmlCode = htmlInput.value;
             doc.open();
@@ -135,6 +182,31 @@
 
         // Event listener for input events
         htmlInput.addEventListener('input', renderHTML);
+
+        // Event listener for paste event to handle pasted content
+        htmlInput.addEventListener('paste', function () {
+            setTimeout(renderHTML, 0);
+        });
+
+        // Paste content from clipboard into the input area
+        function pasteFromClipboard() {
+            navigator.clipboard.readText().then(text => {
+                htmlInput.value = text;
+                renderHTML(); // Re-render after pasting content
+            }).catch(err => {
+                console.error('Failed to read clipboard contents: ', err);
+            });
+        }
+
+        // Format the HTML code with Prettier
+        function formatHTML() {
+            const formattedHTML = prettier.format(htmlInput.value, {
+                parser: "html",
+                plugins: [prettierPlugins.html],
+            });
+            htmlInput.value = formattedHTML;
+            renderHTML();  // Re-render after formatting
+        }
 
         // Clear content function
         function clearContent() {
