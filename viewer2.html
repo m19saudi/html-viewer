@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Offline HTML Viewer</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f9;
+            color: #333;
+        }
+
+        h1 {
+            text-align: center;
+            color: #4CAF50;
+        }
+
+        #container {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        #htmlInput {
+            width: 45%;
+            height: 300px;
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            resize: none;
+            background-color: #fff;
+        }
+
+        #outputViewer {
+            width: 45%;
+            height: 300px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            background-color: #fff;
+            padding: 10px;
+            overflow: auto;
+        }
+
+        button {
+            display: block;
+            margin: 20px auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Offline HTML Viewer</h1>
+    
+    <div id="container">
+        <!-- Input area for HTML -->
+        <textarea id="htmlInput" placeholder="Paste your HTML code here"></textarea>
+
+        <!-- Output area for rendering HTML -->
+        <iframe id="outputViewer" class="hidden"></iframe>
+    </div>
+
+    <!-- Button to render HTML -->
+    <button onclick="renderHTML()">Render HTML</button>
+
+    <script>
+        function renderHTML() {
+            // Get the HTML code from the textarea
+            const htmlCode = document.getElementById('htmlInput').value;
+
+            // Find the iframe and update its content
+            const iframe = document.getElementById('outputViewer');
+            const doc = iframe.contentWindow.document;
+
+            // Open, write and close the iframe document
+            doc.open();
+            doc.write(htmlCode);
+            doc.close();
+
+            // Show the iframe
+            iframe.classList.remove('hidden');
+        }
+    </script>
+</body>
+</html>
